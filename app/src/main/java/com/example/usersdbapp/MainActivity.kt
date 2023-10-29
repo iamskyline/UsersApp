@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -136,7 +137,6 @@ fun UserItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputUserInitials(mainViewModel: MainViewModel) {
     Column(modifier = Modifier.padding(10.dp)) {
@@ -146,57 +146,38 @@ fun InputUserInitials(mainViewModel: MainViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                OutlinedTextField(
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 7.dp),
-                    value = mainViewModel.nameTextField.value,
-                    onValueChange = {
-                        mainViewModel.nameTextField.value = it
-                    },
-                    label = {
-                        Text(text = "Имя")
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = inputColor,
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                OutlinedTextField(
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 7.dp),
-                    value = mainViewModel.surnameTextField.value,
-                    onValueChange = {
-                        mainViewModel.surnameTextField.value = it
-                    },
-                    label = {
-                        Text(text = "Фамилия")
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = inputColor,
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                OutlinedTextField(
-                    value = mainViewModel.lastnameTextField.value,
-                    onValueChange = {
-                        mainViewModel.lastnameTextField.value = it
-                    },
-                    label = {
-                        Text(text = "Отчество")
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = inputColor,
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                )
+                CustomTextField(mainViewModel.nameTextField, "Имя")
+                CustomTextField(mainViewModel.surnameTextField, "Фамилия")
+                CustomTextField(mainViewModel.lastnameTextField, "Отчество")
             }
             IconButton(onClick = {
                 mainViewModel.InsertItem()
             }) {
                 Icon(
-                    modifier = Modifier
-                        .size(40.dp),
-                    imageVector = Icons.Default.Add, contentDescription = ""
+                    modifier = Modifier.size(40.dp),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add"
                 )
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomTextField(mainViewModelType: MutableState<String>, label: String){
+    OutlinedTextField(
+        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 7.dp),
+        value = mainViewModelType.value,
+        onValueChange = {
+            mainViewModelType.value = it
+        },
+        label = {
+            Text(text = label)
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = inputColor,
+        ),
+        shape = RoundedCornerShape(10.dp)
+    )
 }

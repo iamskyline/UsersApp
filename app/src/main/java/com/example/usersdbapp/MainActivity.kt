@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,8 +49,11 @@ import com.example.usersdbapp.ui.theme.UsersDbAppTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 val mainColor = "#e2e2e2".toColor()
-val cardColor = "#e6ffec".toColor()
+val cardColor = "#ffd392".toColor()
+val cardBorderColor = "#ed8e00".toColor()
 val inputColor = "#cdcdcd".toColor()
+val inputBorderColor = "#ff9900".toColor()
+val inputColorText = "#565656".toColor()
 
 fun String.toColor(): Color {
     return Color(android.graphics.Color.parseColor(this))
@@ -107,8 +112,11 @@ fun UserItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor)
+            .padding(5.dp)
+            .border(1.dp, cardBorderColor, shape = RoundedCornerShape(15.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = cardColor,
+        )
     ) {
         Row(
             modifier = Modifier
@@ -177,6 +185,9 @@ fun CustomTextField(mainViewModelType: MutableState<String>, label: String){
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = inputColor,
+            focusedIndicatorColor = inputBorderColor,
+            focusedLabelColor = inputColorText,
+            cursorColor = inputColorText
         ),
         shape = RoundedCornerShape(10.dp)
     )

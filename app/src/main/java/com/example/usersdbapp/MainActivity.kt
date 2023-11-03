@@ -50,6 +50,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,11 +65,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.usersdbapp.components.BottomBar
 import com.example.usersdbapp.components.DrawerMenu
+import com.example.usersdbapp.components.InputScreen
 import com.example.usersdbapp.components.InputUserInitials
 import com.example.usersdbapp.components.TopBar
 import com.example.usersdbapp.components.UserItem
+import com.example.usersdbapp.components.UsersScreen
 import com.example.usersdbapp.data.UsersEntity
 import com.example.usersdbapp.ui.theme.UsersDbAppTheme
 import kotlinx.coroutines.launch
@@ -97,11 +105,15 @@ class MainActivity : ComponentActivity() {
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainArea(
-    mainViewModel: MainViewModel = viewModel(factory = MainViewModel.factory),
+    mainViewModel: MainViewModel = viewModel(factory = MainViewModel.factory)
 ) {
     val itemsList = mainViewModel.itemsList.collectAsState(initial = emptyList())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val coroutine = rememberCoroutineScope()
+    val titleState = remember {
+        mutableStateOf("Добавление пользователя")
+    }
+    val navController = rememberNavController()
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -110,7 +122,7 @@ fun MainArea(
                 // add drawer content here
                 // this is a column scope
                 // so, if you add multiple elements, they are placed vertically
-                DrawerMenu()
+                DrawerMenu(titleState, navController, drawerState)
             }
         }
     ) {
@@ -118,42 +130,24 @@ fun MainArea(
         // add scaffold here
         Scaffold(
             topBar = {
-                TopBar(drawerState, coroutine)
+                TopBar(drawerState, titleState)
             },
             bottomBar = {
                 BottomBar()
             }
         ) { paddingValues ->
             // rest of the app's UI
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+            NavHost(
+                navController = navController,
+                startDestination = "inputScreen"
             ) {
-                Box(modifier = Modifier
-                    .padding(10.dp, 0.dp, 10.dp, 10.dp)
-                    .clip(RoundedCornerShape(25.dp))) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(mainColor)
-                    ) {
-                        InputUserInitials(mainViewModel)
-                        LazyColumn() {
-                            items(itemsList.value) { item ->
-                                UserItem(item, {
-                                    mainViewModel.user = it
-                                    mainViewModel.nameTextField.value = it.Username
-                                    mainViewModel.surnameTextField.value = it.Usersurname
-                                    mainViewModel.lastnameTextField.value = it.Userlastname
-                                },
-                                    {
-                                        mainViewModel.DeleteItem(it)
-                                    }
-                                )
-                            }
-                        }
-                    }
+                composable("inputScreen") {
+                    // Экран "Добавление пользователя"
+                    InputScreen(paddingValues, mainViewModel)
+                }
+                composable("usersScreen") {
+                    // Экран "Просмотр пользователей"
+                    UsersScreen(paddingValues, mainViewModel, itemsList)
                 }
             }
         }

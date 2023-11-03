@@ -1,11 +1,17 @@
 package com.example.usersdbapp.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -13,17 +19,43 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.usersdbapp.MainViewModel
 import com.example.usersdbapp.inputBorderColor
 import com.example.usersdbapp.inputColor
 import com.example.usersdbapp.inputColorText
+import com.example.usersdbapp.mainColor
+
+@Composable
+fun InputScreen(paddingValues: PaddingValues, mainViewModel: MainViewModel) {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp, 0.dp, 10.dp, 10.dp)
+                .clip(RoundedCornerShape(25.dp))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(mainColor)
+            ) {
+                InputUserInitials(mainViewModel)
+            }
+        }
+    }
+}
 
 @Composable
 fun InputUserInitials(mainViewModel: MainViewModel) {
@@ -53,7 +85,7 @@ fun InputUserInitials(mainViewModel: MainViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(mainViewModelType: MutableState<String>, label: String){
+fun CustomTextField(mainViewModelType: MutableState<String>, label: String) {
     OutlinedTextField(
         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 7.dp),
         value = mainViewModelType.value,
